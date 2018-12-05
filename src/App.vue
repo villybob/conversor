@@ -5,9 +5,13 @@
       <div class="content_body">
         <Title/>
         <div id="converter_template_wrap" class="converter_template_wrap">
-          <p v-for="num in ['1', '2', '3','4']" :key="num">{{num}}</p>
-          <converter v-for="converted in converters"/>
-          <button>pepe</button>
+          <converter/>
+          <converter v-for="converted in converters" :key="converted"/>
+          <div id="plus_wrap" class="plus_wrap">
+            <div class="plus">
+                <img @click="addConverter()" class="plus_img" src="../dist/img/plus.png">
+            </div>
+           </div>
         </div>
       </div>
     </div>
@@ -32,7 +36,12 @@ export default {
   },
   data(){
     return {
-      converters: []
+      converters: [],
+    }
+  },
+  methods: {
+    addConverter(){
+      this.converters.push(this.converters.length + 1);
     }
   }
 }
