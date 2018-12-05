@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/main.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.1.0"></script>
+    <script src="https://unpkg.com/vue-autonumeric@1.2.6/dist/vue-autonumeric.min.js"></script>
+    
+</head>
+<body>
+    <div id="body_wrap" class="body_wrap">
+        <header class="content_header">
+            <div class="full_header">
+                <div class="logo_header">
+                    <img src="img/bit2me-white.svg" alt="bit2me">
+                </div>
+                <div class="menu_header">
+                    <nav class="nav_header">
+                        <ul id="menu_main">
+                            <li id="menu_converter"><a href="index.html"><span>CONVERTER</span></a></li>
+                            <li><a href="https://bit2me.com"><span>BIT2ME.COM</span></a></li>
+                            <li><a href="https://bit2me.com/es/comprar-bitcoins.php"><span>COMPRAR</span></a></li>
+                            <li><a href="https://bit2me.com/es/vender-bitcoins.php"><span>VENDER</span></a></li>
+                            <li><a href="https://academy.bit2me.com"><span>ACADEMY</span></a></li>
+                        </ul>   
+                    </nav>              
+                </div>
+            </div>
+        </header>
+        <div class="content_body_wrap">
+            <div class="content_body">
+                <div class="page_title">
+                    <h1 class="title">Cryptoconverter Bit2Me</h1>
+                </div>
+                <div id="converter_template_wrap" class="converter_template_wrap">
+                    <template id="converter_template">
+                        <div id="template_wrap">
+                            <div class="full_converter_wrap">
+                                <div class="converter">
+                                    <div class="converter_wrap">
+                                        <div class="amount_wrap">
+                                            <vue-autonumeric id="amount_left" class="amount" 
+                                                :options="{
+                                                    allowDecimalPadding: false,
+                                                    digitGroupSeparator: '',
+                                                    minimumValue: '0',
+                                                }"
+                                                v-model="autoNumericModel1">
+                                            </vue-autonumeric>
+                                        </div>
+                                        <div class="coin_wrap">
+                                            <div class="coin_logo">
+                                                <img class="logo" src="img/bitcoin.png">
+                                            </div>
+                                            <div class="coin_symbol">
+                                                <span class="symbol">BTC</span>
+                                            </div>
+                                            <div class="coin_separator">
+                                                <span class="separator">-</span>
+                                            </div>
+                                            <div class="coin_name">
+                                                <span class="name">Bitcoin</span>
+                                            </div>
+                                            <div class="selector_arrow_wrap">
+                                                <div class="selector_arrow">
+                                                    <img class="arrow_down" src="img/arrow_down.svg">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="equal_wrap">
+                                        <img class="equal" src="img/equal.png">
+                                    </div>
+                                    <div class="converter_wrap">
+                                        <div class="amount_wrap">
+                                            <vue-autonumeric id="amount_right" class="amount" 
+                                                :options="{
+                                                    allowDecimalPadding: false,
+                                                    digitGroupSeparator: '',
+                                                    minimumValue: '0',
+                                                }"
+                                                v-model="autoNumericModel2">
+                                            </vue-autonumeric>
+                                        </div>
+                                        <div class="coin_wrap">
+                                            <div class="coin_logo">
+                                                <img class="logo" src="img/bitcoin.png">
+                                            </div>
+                                            <div class="coin_symbol">
+                                                <span class="symbol">BTC</span>
+                                            </div>
+                                            <div class="coin_separator">
+                                                <span class="separator">-</span>
+                                            </div>
+                                            <div class="coin_name">
+                                                <span class="name">Bitcoin</span>
+                                            </div>
+                                            <div class="selector_arrow_wrap">
+                                                <div class="selector_arrow">
+                                                    <img class="arrow_down" src="img/arrow_down.svg">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </div>
+                            <div id="plus_wrap" class="plus_wrap">
+                                <div class="plus">
+                                    <img  @click="newTemplate" class="plus_img" src="img/plus.png">
+                                </div>
+                            </div> 
+                        </div>
+                    </template>        
+                </div>
+            </div>
+            {{ $data }}
+        </div>
+     </div>
+</body>
+<script src="js/main.js"></script>
+</html>
