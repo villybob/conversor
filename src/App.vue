@@ -5,7 +5,9 @@
       <div class="content_body">
         <Title/>
         <div id="converter_template_wrap" class="converter_template_wrap">
-          <converter/>
+          <p v-for="num in ['1', '2', '3','4']" :key="num">{{num}}</p>
+          <converter v-for="converted in converters"/>
+          <button>pepe</button>
         </div>
       </div>
     </div>
@@ -27,6 +29,11 @@ export default {
     converter,
     Title,
     VueAutonumeric
+  },
+  data(){
+    return {
+      converters: []
+    }
   }
 }
 </script>

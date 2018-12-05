@@ -10,7 +10,7 @@
                                 digitGroupSeparator: '',
                                 minimumValue: '0',
                             }"
-                            v-model="autoNumericModel1">
+                            v-model="n1">
                         </vue-autonumeric>
                     </div>
                     <div class="coin_wrap">
@@ -44,7 +44,7 @@
                                 digitGroupSeparator: '',
                                 minimumValue: '0',
                             }"
-                            v-model="autoNumericModel2">
+                            v-model="n2">
                         </vue-autonumeric>
                     </div>
                     <div class="coin_wrap">
@@ -89,8 +89,8 @@ import VueAutonumeric from 'vue-autonumeric'
     },
     data(){
         return {
-            autoNumericModel1: 1,
-            autoNumericModel2: 1,
+            n1: 1,
+            n2: 1,
             input1: 1,
             input2: 2,
         }
@@ -100,7 +100,7 @@ methods: {
 
 			this.input1+=1, this.input2+=1;
 			var insert = document.getElementById('plus_wrap');
-			var addTemplate= '<converter></converter>';
+			var addTemplate= '<converter/>';
 			insert.innerHTML = addTemplate;
 			
 		}
