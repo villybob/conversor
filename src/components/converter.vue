@@ -1,5 +1,6 @@
 <template>
     <div id="template_wrap">
+        <p>{{coinSelected}}</p>
         <div class="full_converter_wrap">
             <div class="converter">
                 <div class="converter_wrap">
@@ -12,24 +13,51 @@
                             }"
                             v-model="n1">
                         </vue-autonumeric> -->
-                        <input ref="amount_left" class="amount" type="number" v-model="n1" @focus="operation1" @focusout="clearInterval1">
+                        <input ref="amount_left" class="amount" type="number" v-model="n1" @focus="operation(); oper=true">
                     </div>
                     <div class="coin_wrap">
-                        <div class="coin_logo">
-                            <img class="logo" src= "../../dist/img/bitcoin.png">
+                        <div v-if="dropdown">
+                            <vue-single-select 
+                                option-label="name"
+                                :options="api"
+                                v-model="coinSelected"
+                                >
+                                    <template slot="option" slot-scope="{option}">
+                                        <div class="select_coin_wrap">
+                                            <div class="coin_logo">
+                                                <img class="select_logo" :src="option.icon">
+                                            </div>
+                                            <div class="coin_symbol">
+                                                <span class="select_symbol">{{ option.symbol }}</span>
+                                            </div>
+                                            <div class="coin_separator">
+                                                <span class="separator">-</span>
+                                            </div>
+                                            <div class="coin_name">
+                                                <span class="name">{{ option.name }}</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                            </vue-single-select>
                         </div>
-                        <div class="coin_symbol">
-                            <span class="symbol">{{ symbol1 }}</span>
-                        </div>
-                        <div class="coin_separator">
-                            <span class="separator">-</span>
-                        </div>
-                        <div class="coin_name">
-                            <span class="name">{{ name1 }}</span>
-                        </div>
-                        <div class="selector_arrow_wrap">
-                            <div class="selector_arrow">
-                                <img class="arrow_down" src="../../dist/img/arrow_down.svg">
+                        <br>
+                        <div class="coin_wrap" @click="handleSelectCoin()">
+                            <div class="coin_logo" v-if="!dropdown">
+                                <img class="logo" :src="logo">
+                            </div>
+                            <div class="coin_symbol" v-if="!dropdown">
+                                <span class="symbol">{{ symbol1 }}</span>
+                            </div>
+                            <div class="coin_separator" v-if="!dropdown">
+                                <span class="separator">-</span>
+                            </div>
+                            <div class="coin_name" v-if="!dropdown">
+                                <span class="name">{{ name1 }}</span>
+                            </div>
+                            <div class="selector_arrow_wrap" v-if="!dropdown">
+                                <div class="selector_arrow">
+                                    <img class="arrow_down" src="../../dist/img/arrow_down.svg">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -39,15 +67,15 @@
                 </div>
                 <div class="converter_wrap">
                     <div class="amount_wrap">
-                        <vue-autonumeric id="amount_right" class="amount"
+                        <!-- <vue-autonumeric id="amount_right" class="amount"
                             :options="{
                                 allowDecimalPadding: false,
                                 digitGroupSeparator: '',
                                 minimumValue: '0',
                             }"
                             v-model="n2" value=1>
-                        </vue-autonumeric>
-                        <!-- <input class="amount" type="number" v-model="n2" @focus="operation2" @focusout="clearInterval2"> -->
+                        </vue-autonumeric> -->
+                        <input class="amount" type="number" v-model="n2" @focus="operation(); oper=false">
                     </div>
                     <div class="coin_wrap">
                         <div class="coin_logo">
@@ -69,7 +97,7 @@
                         </div>
                     </div>
                 </div>    
-            </div>
+            </div>      
         </div> {{coin}}
     </div>       
 </template>
@@ -78,13 +106,14 @@
 import VueAutonumeric from 'vue-autonumeric';
 import VueSingleSelect from "vue-single-select";
 const axios = require('axios');
+const urlApi = 'https://api.bit2me.com/v1/ticker2';
 
 export default {
     name: 'converter',
 
     components: {
         VueAutonumeric,
-        VueSingleSelect
+        VueSingleSelect,
     },
 
     props: {
@@ -93,48 +122,77 @@ export default {
 
     data(){
         return {
+            dropdown: false,
+            oper: true,
             n1: 1,
             symbol1: 'BTC',
             symbol2: 'EUR',
             name1: 'Bitcoin',
             name2: 'Euro',
+            logo: '',
             //coinValue: 3000,
             n2: 3000,
-            interval1:'',
-            interval2:'',
             coin:[],
+            api: {},
+            apiCoin:{},
+            coinSelected: {}
+        }
+    },
+
+    watch: {
+        coinSelected(){
+            if(this.coinSelected.hasOwnProperty('name')){
+                this.dropdown=!this.dropdown;
+                this.logo=this.coinSelected.icon;
+                this.symbol1=this.coinSelected.symbol;
+                this.name1=this.coinSelected.name;
+                this.coin=this.coinSelected.buy;
+
+            }
         }
     },
 
     mounted () {
         this.$refs.amount_left.focus();
-        console.log('hola')
+        setInterval(() => {
+            if(this.oper){
+                this.n2 = this.n1*this.coin;     
+            }else{
+                this.n1 = this.n2/this.coin;
+            }
+        }, 5000);
+    },
+
+    created (){
         axios
-            .get('https://api.bit2me.com/v1/ticker2')
-            .then(response => (this.coin = response.data.data[0].buy, this.n2 = response.data.data[0].buy ))
+            .get(urlApi)
+            .then(response => (
+                this.coin = response.data.data[0].buy,
+                this.n2 = response.data.data[0].buy,
+                this.logo = response.data.data[0].icon,
+                this.api = response.data.data
+            ))
         setInterval(() => { axios
-            .get('https://api.bit2me.com/v1/ticker2')
-            .then(response => (this.coin = response.data.data[0].buy ))
+            .get(urlApi)
+            .then(response => (this.coin = response.data.data[0].buy, this.api = response.data.data))
         }, 5000)
+        
     },
 
     methods: {
-        operation1: function(){
-            this.interval1 = setInterval(() => {
-                this.n2 = this.n1*this.coin;     
+        operation: function(){     
+            setInterval(() => {
+                if(this.oper){
+                    this.n2 = this.n1*this.coin;     
+                }else{
+                    this.n1 = this.n2/this.coin;
+                }
             }, 1);
         },
-        operation2: function(){
-            this.interval2 = setInterval(() => {
-                this.n1 = this.n2/this.coin;
-            }, 1);
-        },
-        clearInterval1: function(){
-            clearInterval(this.interval1)   
-        },
-        clearInterval2: function(){
-            clearInterval(this.interval2)  
-         },
+        handleSelectCoin(){
+            this.dropdown = true;
+            this.coinSelected = {};
+        }
     // directives: {
     //     focus: {
     //         // directive definition
@@ -144,4 +202,5 @@ export default {
     //     }
     }
 }
+
 </script>
