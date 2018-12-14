@@ -150,7 +150,6 @@ export default {
             openedDropdown1: false,
             openedDropdown2: false,
             isInput1Focus: true,
-            isInitial: true,
             valueInput1: 1,
             valueInput2: 1,
             coinSelected1: {
@@ -162,10 +161,9 @@ export default {
             coinSelected2: {
                 name: 'Euro',
                 symbol: 'EUR',
-                icon: '../../dist/img/euro.png',
+                icon: 'http://icons.iconarchive.com/icons/custom-icon-design/all-country-flag/256/European-Union-Flag-icon.png',
                 buy: 1,
             },
-            refreshTimeInterval: 5000,
             apiData: [],
         }
     },
@@ -174,7 +172,6 @@ export default {
         coinSelected1(){ 
             if(this.coinSelected1.hasOwnProperty('name')){
                 this.openedDropdown1=false;
-                this.initial=false;
                 this.operation();
             }
         },

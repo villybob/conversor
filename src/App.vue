@@ -1,5 +1,6 @@
 <template>
   <div id="body_wrap" class="body_wrap">
+    <PreHeader :api="api"/>
     <Header/>
     <div class="content_body_wrap">
       <div class="content_body">
@@ -11,17 +12,20 @@
             <div class="plus">
                 <img @click="addConverter()" class="plus_img" src="../dist/img/plus.png">
             </div>
-           </div>
+          </div>
         </div>
       </div>
     </div>
+    <Footer/>
   </div>
 </template>
 
 <script>
+import PreHeader from './components/PreHeader.vue'
 import Header from './components/Header.vue'
 import Title from './components/Title.vue'
 import converter from './components/converter.vue'
+import Footer from './components/Footer.vue'
 import VueAutonumeric from 'vue-autonumeric'
 import axios from 'axios'
 
@@ -30,9 +34,11 @@ require('@/../dist/css/styles.css');
 export default {
   name: 'App',
   components: {
+    PreHeader,
     Header,
     converter,
     Title,
+    Footer,
     VueAutonumeric
   },
   data(){
