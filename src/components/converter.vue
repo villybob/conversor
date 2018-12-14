@@ -171,7 +171,7 @@ export default {
     watch: {
         coinSelected1(){ 
             if(this.coinSelected1.hasOwnProperty('name')){
-                this.openedDropdown1=false;
+                // this.openedDropdown1=false;
                 this.operation();
             }
         },

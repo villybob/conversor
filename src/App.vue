@@ -29,6 +29,8 @@ import Footer from './components/Footer.vue'
 import VueAutonumeric from 'vue-autonumeric'
 import axios from 'axios'
 
+const newApi = require ('./components/api.js');
+
 require('@/../dist/css/styles.css');
 
 export default {
@@ -55,7 +57,7 @@ export default {
       .then(response => {
           this.api = response.data.data
       });
-
+    console.log(newApi);
     setInterval(() => { axios
       .get(this.urlApi)
       .then(response =>{
