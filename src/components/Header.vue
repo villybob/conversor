@@ -2,7 +2,7 @@
   <header class="content_header">
     <div class="full_header">
       <div class="logo_header">
-        <img src="../../dist/img/bit2me-white.svg" alt="bit2me">
+        <img src="../assets/img/bit2me-white.svg" alt="bit2me">
       </div>
       <div class="menu_header">
         <nav class="nav_header">

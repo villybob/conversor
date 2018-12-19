@@ -1,0 +1,126 @@
+.full_header{
+    background-color: #044e97;
+    width: 100%;
+    justify-content: center;
+    display: inline-flex;
+    margin: auto;
+    vertical-align: center;
+}
+.logo_header{
+    width: 12%;
+}
+.logo_header img{
+    height: 50px;
+    padding-top: 1%;
+    /*padding-left: 20%;*/
+}
+html, body{
+    height: 100%;
+}
+body{
+    margin: 0 auto;
+    font-family: "Montserrat",sans-serif;
+}
+.menu_header{
+    width: 45%;
+    text-align: right;
+}
+#menu_main{
+    vertical-align: middle;
+    display: inline-flex;
+}
+li{
+    list-style: none;
+    padding: 1% 0 0 3%;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+#menu_main a{
+    font-style: normal;
+    text-transform: none;
+    letter-spacing: 0px;
+    text-decoration: none;
+    color: #fff;
+}
+#menu_main a:hover{
+    color: #aac9f7;
+}
+#menu_converter a{
+    color: #f08617;
+    font-weight: 600;
+}
+#menu_converter a:hover{
+    color: #ff8800;
+}
+.content_body{
+    width: 1170px;
+    margin: 0 auto;
+}
+.page_title{
+    color: #044e97;
+    margin: 7% 0 4% 0;
+}
+.converter{
+    width: 80%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #044e97;
+    border-radius: 15px;
+    padding: 3%;
+    margin: 4% 0;
+}
+.full_converter_wrap, .plus_wrap, .amount_coin_wrap, .coin_wrap{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.converter_wrap{
+    display: inline-flex;
+    background-color: #fff;
+    padding: 2%;
+    border-radius: 15px;
+}
+.coin_wrap{
+    margin-left: 2%;
+}
+.amount_wrap, .coin_logo, .coin_symbol, .coin_separator, .coin_name{
+    margin: 0 2%;
+}
+.amount{
+    font-size: 2.5em;
+    width: 170px;
+}
+.logo{
+    height: 40px;
+}
+.arrow_down{
+    height: 15px;
+}
+.equal_wrap{
+    margin: 0 3%;
+}
+.equal{
+    height: 35px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+.plus_img{
+    height: 50px;
+    background-color: #f08617;
+    border-radius: 30px;
+}
+.symbol{
+    font-size: 1.5em;
+    font-weight: 600;
+}
+.name, .separator{
+    font-size: 1.2em;
+}
+.selector_arrow{
+    margin: 0 0.2em;
+}
+.body_wrap{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}

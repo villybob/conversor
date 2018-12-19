@@ -4,14 +4,6 @@
             <div class="converter">
                 <div class="converter_wrap">
                     <div class="amount_wrap">
-                        <!-- <vue-autonumeric id="amount_left" class="amount" 
-                            :options="{
-                                allowDecimalPadding: false,
-                                digitGroupSeparator: '',
-                                minimumValue: '0',
-                            }"
-                            v-model="valueInput1">
-                        </vue-autonumeric> -->
                         <input ref="amount_left" class="amount" type="number" v-model="valueInput1" @focus="isInput1Focus=true">
                     </div>
                     <div class="coin_wrap">
@@ -56,31 +48,23 @@
                             </div>
                             <div class="selector_arrow_wrap" v-if="!openedDropdown1">
                                 <div class="selector_arrow">
-                                    <img class="arrow_down" src="../../dist/img/arrow_down.svg">
+                                    <img class="arrow_down" src="../assets/img/arrow_down.svg">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="equal_wrap">
-                    <img class="equal" src="../../dist/img/equal.png">
+                    <img class="equal" src="../assets/img/equal.png">
                 </div>
                 <div class="converter_wrap">
                     <div class="amount_wrap">
-                        <!-- <vue-autonumeric id="amount_right" class="amount"
-                            :options="{
-                                allowDecimalPadding: false,
-                                digitGroupSeparator: '',
-                                minimumValue: '0',
-                            }"
-                            v-model="valueInput2" value=1>
-                        </vue-autonumeric> -->
-                        <input class="amount" type="number" v-model="valueInput2" @focus="isInput1Focus=false">
+                        <input ref="amount_right" class="amount" type="number" v-model="valueInput2" @focus="isInput1Focus=false">
                     </div>
                     <div class="coin_wrap">
                         <div v-if="openedDropdown2">
                             <vue-single-select 
-                                option-label="name"
+                                option-label="symbol"
                                 :options="apiData"
                                 v-model="coinSelected2"
                                 placeholder="insert coin"
@@ -118,7 +102,7 @@
                             </div>
                             <div class="selector_arrow_wrap" v-if="!openedDropdown2">
                                 <div class="selector_arrow">
-                                    <img  class="arrow_down" src="../../dist/img/arrow_down.svg">
+                                    <img  class="arrow_down" src="../assets/img/arrow_down.svg">
                                 </div>
                             </div>
                         </div>
@@ -126,18 +110,17 @@
                 </div>    
             </div>      
         </div>
+        {{api}}
     </div>       
 </template>
 
 <script>
-import VueAutonumeric from 'vue-autonumeric';
-import VueSingleSelect from "vue-single-select";
+import VueSingleSelect from 'vue-single-select';
 
 export default {
     name: 'converter',
 
     components: {
-        VueAutonumeric,
         VueSingleSelect,
     },
 
@@ -156,13 +139,13 @@ export default {
                 name: '',
                 symbol: '',
                 icon: '',
-                buy: 1,
+                rate: 1,
             },
             coinSelected2: {
                 name: 'Euro',
                 symbol: 'EUR',
                 icon: 'http://icons.iconarchive.com/icons/custom-icon-design/all-country-flag/256/European-Union-Flag-icon.png',
-                buy: 1,
+                rate: 1,
             },
             apiData: [],
         }
@@ -171,7 +154,7 @@ export default {
     watch: {
         coinSelected1(){ 
             if(this.coinSelected1.hasOwnProperty('name')){
-                // this.openedDropdown1=false;
+                this.openedDropdown1=false;
                 this.operation();
             }
         },
@@ -183,41 +166,50 @@ export default {
         },
         valueInput1(){
             if(this.isInput1Focus){
-                this.valueInput2 = this.valueInput1*this.coinSelected1.buy/this.coinSelected2.buy; 
+                this.valueInput2 = this.valueInput1*this.coinSelected1.rate/this.coinSelected2.rate;  
             }
        },
         valueInput2(){
             if(!this.isInput1Focus){
-                this.valueInput1 = this.valueInput2*this.coinSelected2.buy/this.coinSelected1.buy;
+                this.valueInput1 = this.valueInput2*this.coinSelected2.rate/this.coinSelected1.rate;
             }
         },
-        api(newVal, oldVal){
-            this.apiData = newVal;
+        // api(newVal){
+        //     this.apiData = newVal;
         
-            this.api.map((coin)=>{
-                if(this.coinSelected1.symbol === coin.symbol){
-                    this.coinSelected1.buy = coin.buy;
-                    }
-                if(this.coinSelected2.symbol === coin.symbol){
-                    this.coinSelected2.buy = coin.buy;
-                }
-            });
-            this.operation();
-        } 
+        //     this.api.map((coin)=>{
+        //         if(this.coinSelected1.symbol === coin.symbol){
+        //             this.coinSelected1.rate = coin.rate;
+        //             }
+        //         if(this.coinSelected2.symbol === coin.symbol){
+        //             this.coinSelected2.rate = coin.rate;
+        //         }
+        //     });
+            
+        //     this.operation();
+        //     if(this.isInput1Focus){
+        //         this.$refs.amount_right.classList.add('recently-updated');
+        //         setTimeout(()=>this.$refs.amount_right.classList.remove('recently-updated'), 300);
+        //     }else{
+        //         this.$refs.amount_left.classList.add('recently-updated');
+        //         setTimeout(()=>this.$refs.amount_left.classList.remove('recently-updated'), 300);                                         
+        //     }
+        // } 
     },
 
     mounted () {
         this.$refs.amount_left.focus();
+        this.apiData = this.api;
         this.coinSelected1 = this.api[0];
-        this.valueInput2 = this.api[0].buy;
+        this.valueInput2 = this.api[0].rate;
     },
 
     methods: {
         operation(){
             if(this.isInput1Focus){
-                this.valueInput2 = this.valueInput1*this.coinSelected1.buy/this.coinSelected2.buy;     
+                this.valueInput2 = this.valueInput1*this.coinSelected1.rate/this.coinSelected2.rate;     
             }else{
-                this.valueInput1 = this.valueInput2*this.coinSelected2.buy/this.coinSelected1.buy;
+                this.valueInput1 = this.valueInput2*this.coinSelected2.rate/this.coinSelected1.rate;
             }
         },
         handleSelectCoin(){
@@ -230,5 +222,25 @@ export default {
         }
     }
 }
-
 </script>
+<style>
+.select_logo{
+    height: 25px;
+}
+.recently-updated{
+color:grey;
+  animation: blink 0.2s alternate;
+  transition: color 0.2s linear;
+}
+
+@keyframes blink {
+   from {
+      color: black;
+   }
+   to {
+      color: grey;
+   }
+ }
+</style>
+
+
