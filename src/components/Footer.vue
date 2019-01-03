@@ -23,7 +23,6 @@ export default {
   text-align: center;
   color: #a3a3a3;
   background-color: #222;
-  margin-top: 1%;
   padding: 1%;
   flex-shrink: 0;
 }
