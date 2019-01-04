@@ -13,6 +13,7 @@
               ref="amount_left"
               class="amount"
               type="number"
+              min=0
               v-model="valueInput1"
               @focus="isInput1Focus=true"
               @blur="outFocus()"
@@ -26,7 +27,7 @@
                 :options="apiData"
                 v-model="coinSelected1"
                 placeholder="insert coin"
-                :filterBy="customFilter()"
+                :filterBy="customFilter()"  
               >
                 <template slot="option" slot-scope="{option}">
                   <div class="select_coin_wrap">
@@ -113,7 +114,14 @@
           </div>
         </div>
         <div class="delete_converter_wrap">
-          <span class="delete_converter" @click="deleteConverter()">X</span>
+          <div class="delete_converter" @click="deleteConverter()">
+            <svg class="delete_cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+              <g>
+              <path d="M15,0A15,15,0,1,0,30,15,15,15,0,0,0,15,0Zm0,29A14,14,0,1,1,29,15,14.01589,14.01589,0,0,1,15,29Z"/>
+              <path d="M19.78516,10.21484a.49983.49983,0,0,0-.707,0L15,14.293l-4.07812-4.07813a.5.5,0,0,0-.707.707L14.293,15l-4.07813,4.07812a.5.5,0,1,0,.707.707L15,15.707l4.07812,4.07813a.5.5,0,1,0,.707-.707L15.707,15l4.07813-4.07812A.49983.49983,0,0,0,19.78516,10.21484Z"/>
+              </g>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -130,7 +138,9 @@ export default {
     VueSingleSelect
   },
 
-  props: ["api"],
+  props: {
+    api: Object,
+  },
 
   data() {
     return {
@@ -145,13 +155,15 @@ export default {
         name: "",
         symbol: "",
         icon: "",
-        rate: 1
+        rate: 1,
+        decimals: 8
       },
       coinSelected2: {
         name: "",
         symbol: "USD",
         icon: "http://pngimg.com/uploads/coin/coin_PNG36943.png",
         rate: 1,
+        decimals: 2
       },
       apiData: []
     };
@@ -174,31 +186,19 @@ export default {
       if (this.coinSelected1.hasOwnProperty("name")) {
         this.openedDropdown1 = false;
         this.operation();
-        setTimeout(() => { this.adjustInput();}, 10)
       }
     },
     coinSelected2() {
       if (this.coinSelected2.hasOwnProperty("name")) {
         this.openedDropdown2 = false;
         this.operation();
-        setTimeout(() => { this.adjustInput();}, 10)
       }
     },
     valueInput1() {
-      if (this.isInput1Focus) {
-        this.valueInput2 =
-          (this.valueInput1 * this.coinSelected1.rate) /
-          this.coinSelected2.rate;
-      }
-      setTimeout(() => { this.adjustInput();}, 10)
+      this.operation();
     },
     valueInput2() {
-      if (!this.isInput1Focus) {
-        this.valueInput1 =
-          (this.valueInput2 * this.coinSelected2.rate) /
-          this.coinSelected1.rate;
-      }
-      setTimeout(() => { this.adjustInput();}, 10)
+      this.operation();
     }
     // api(newVal){
     //     this.apiData = newVal;
@@ -234,7 +234,7 @@ export default {
     this.$refs.converter.classList.add("new_converter");
     setTimeout(() => {
         this.$refs.converter.classList.remove("new_converter");
-      }, 4000);
+      }, 1000);
   },
 
   methods: {
@@ -251,14 +251,27 @@ export default {
     },
     operation() {
       if (this.isInput1Focus) {
-        this.valueInput2 =
-          (this.valueInput1 * this.coinSelected1.rate) /
-          this.coinSelected2.rate;
+        if(this.coinSelected2.decimals==2){
+          this.valueInput2 =
+            ((this.valueInput1 * this.coinSelected1.rate) /
+            this.coinSelected2.rate).toFixed(2);
+        }else{
+          this.valueInput2 =
+            ((this.valueInput1 * this.coinSelected1.rate) /
+            this.coinSelected2.rate).toFixed(8);
+        }
       } else {
-        this.valueInput1 =
-          (this.valueInput2 * this.coinSelected2.rate) /
-          this.coinSelected1.rate;
+        if(this.coinSelected1.decimals==2){
+          this.valueInput1 =
+            ((this.valueInput2 * this.coinSelected2.rate) /
+            this.coinSelected1.rate).toFixed(2)
+        }else{
+          this.valueInput1 =
+            ((this.valueInput2 * this.coinSelected2.rate) /
+            this.coinSelected1.rate).toFixed(8)
+        }
       }
+      setTimeout(() => { this.adjustInput();}, 10)
     },
     onFocus() {
       if (this.isInput1Focus) {
@@ -291,7 +304,7 @@ export default {
       setTimeout(() => {
         if(this.remake==false)
         this.isDelete = true;
-      }, 5000);
+      }, 2500);
     },
     remakeConverter() {
       this.remake = true;
@@ -300,9 +313,8 @@ export default {
         this.adjustInput();
         setTimeout(() => {
             this.$refs.converter.classList.remove("new_converter");
-          }, 4000);
+          }, 1000);
       }, 1);
-     
     },
     adjustInput(){
       let textLeft = this.$refs.amount_left;
@@ -315,6 +327,9 @@ export default {
       let sizeRight = txtr.length;
       sizeRight *= 23;
       textRight.style.width = sizeRight+"px";
+    },
+    outFocusSelect1(){
+      this.openedDropdown1 = false;
     }
   }
 };
@@ -327,7 +342,7 @@ export default {
   border: 2px solid #044e97 !important;
 }
 .converter_focus {
-  border: 3px solid #044e97 !important;
+  border: 2px solid #044e97 !important;
 }
 input {
   -webkit-appearance: none;
@@ -407,6 +422,7 @@ input::-webkit-inner-spin-button {
 .equal_wrap {
   padding: 0 3rem;
   flex: 2;
+  text-align: center;
 }
 .equal {
   height: 35px;
@@ -419,22 +435,24 @@ input::-webkit-inner-spin-button {
   align-content: flex-end;
 }
 .delete_converter {
-  font-size: 1rem;
-  color: #044e97;
-  padding: 0.8em;
-  border: 2px solid #91adcc;
-  border-radius: 100%;
-  background-color: #fff;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  margin: 0 auto;
 }
 .delete_converter:hover {
   cursor: pointer;
   cursor: hand;
-  color: #044e97;
-  border: 2px solid #044e97;
-  filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.4));
 }
-.delete_converter:active {
-  color: #0f335b;
+.delete_cross{
+  fill: #91adcc;
+}
+.delete_cross:hover{
+  fill: #044e97;
+}
+.delete_cross:active {
+  fill: #0f335b;
 }
 .symbol {
   font-size: 2.5rem;

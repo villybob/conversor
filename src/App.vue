@@ -100,7 +100,8 @@ export default {
             name: crypto.name,
             symbol:  crypto.symbol.toUpperCase(),
             rate: crypto.current_price,
-            icon: crypto.image
+            icon: crypto.image,
+            decimals: 8,
           };
         });
         this.currencySymbols.map(symbol => {
@@ -108,7 +109,8 @@ export default {
             name: this.fiatNames[symbol],
             symbol: symbol,
             rate: 1/this.fiatRates[symbol],
-            icon: "http://pngimg.com/uploads/coin/coin_PNG36943.png"
+            icon: "http://pngimg.com/uploads/coin/coin_PNG36943.png",
+            decimals: 2,
           };
           this.api.push(fiatCoins);
         });

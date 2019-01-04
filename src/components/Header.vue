@@ -76,7 +76,6 @@ export default {
 }
 .content_header {
   background: linear-gradient(to bottom, #09417a 0, #044e97 100%) !important;
-  
 }
 .header_scroll{
   background-color: #044e97;
@@ -126,4 +125,7 @@ li {
 #menu_converter a:hover {
   color: #fff;
 }
+
+/* Responsive */
+
 </style>
