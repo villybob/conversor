@@ -139,7 +139,7 @@ export default {
   },
 
   props: {
-    api: Object,
+    api: Array,
   },
 
   data() {

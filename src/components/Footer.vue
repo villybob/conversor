@@ -7,7 +7,7 @@
         <a href="https://bit2me.com/terminos-y-condiciones#">    Términos y condiciones</a>
         <br>
         <br>
-        Copyright© 2018. All rights reserved. Bit2Me - BitcoinForMe S.L. B54835301. Germán Bernacer, 65, 03203, Elche, Alicante, España. 
+        Copyright© 2019. All rights reserved. Bit2Me - BitcoinForMe S.L. B54835301. Germán Bernacer, 65, 03203, Elche, Alicante, España. 
       </p>
     </div>
     </footer>

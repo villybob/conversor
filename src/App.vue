@@ -2,12 +2,15 @@
   <div id="body_wrap" class="body_wrap">
     <!-- <PreHeader :api="api"/> -->
     <Header/>
-    <div class="content_body_wrap">
+    <div class="content_body_wrap" v-if="!test">
       <div class="content_body">
         <div id="plus_wrap" class="plus_wrap">
           <div class="plus">
             <button @click="addConverter()" class="plus_button">+ NEW</button>
           </div>
+        </div>
+        <div class="loading_wrap" v-if="!api.length">
+          <span class="loading">Loading...</span>
         </div>
         <div id="converter_template_wrap" class="converter_template_wrap" v-if="api.length">
           <converter :api="api" v-for="converted in orderedConverters" :key="converted"/>  
@@ -15,7 +18,7 @@
         </div>
       </div>
     </div>
-    <Footer/>
+    <Footer v-if="!test"/>
   </div>
 </template>
 
@@ -47,7 +50,8 @@ export default {
       fiatNames: {},
       crypoRates: {},
       currencySymbols: [],
-      names: {}
+      names: {},
+      test: false,
     };
   },
   computed: {
@@ -124,6 +128,21 @@ export default {
 };
 </script>
 <style>
+  .loading_wrap{
+    padding: 3rem;
+    width: 100%;
+    text-align: center;
+    background-color: #fff;
+    padding: 4rem 0;
+    margin: 2rem 0;
+    border-radius: 5px;
+  }
+  .loading{
+    width: 100%;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #044e97;
+  }
   .plus_wrap{
     text-align: right;
     padding: 5em 0 1.5em 0;
