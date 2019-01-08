@@ -2,9 +2,9 @@
     <footer id = "footer">
     <div>
       <p>
-        <a href="https://bit2me.com/aviso-legal#">Legal    </a>|
-        <a href="https://bit2me.com/privacidad#">  Privacidad    </a>|
-        <a href="https://bit2me.com/terminos-y-condiciones#">    Términos y condiciones</a>
+        <a href="https://bit2me.com/aviso-legal#">Legal</a><span> | </span>
+        <a href="https://bit2me.com/privacidad#">Privacidad</a><span> | </span>
+        <a href="https://bit2me.com/terminos-y-condiciones#">Términos y condiciones</a>
         <br>
         <br>
         Copyright© 2019. All rights reserved. Bit2Me - BitcoinForMe S.L. B54835301. Germán Bernacer, 65, 03203, Elche, Alicante, España. 

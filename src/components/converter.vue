@@ -7,7 +7,7 @@
         </div>
       </div>
       <div ref="converter" class="converter" v-if="remake">
-        <div ref="converter_left" class="converter_wrap">
+        <div ref="converter_left" class="converter_wrap converter_left">
           <div class="amount_wrap" v-if="!openedDropdown1">
             <input
               ref="amount_left"
@@ -62,7 +62,7 @@
         <div class="equal_wrap">
           <img class="equal" src="../assets/img/equal.png">
         </div>
-        <div ref="converter_right" class="converter_wrap">
+        <div ref="converter_right" class="converter_wrap converter_right">
           <div class="amount_wrap" v-if="!openedDropdown2">
             <input
               ref="amount_right"
@@ -163,9 +163,17 @@ export default {
         symbol: "USD",
         icon: "http://pngimg.com/uploads/coin/coin_PNG36943.png",
         rate: 1,
-        decimals: 2
+        decimals: 8
       },
-      apiData: []
+      apiData: [],
+      miStorage:{
+        from: "",
+        fromIcon: "",
+        fromValue: 1,
+        to: "",
+        toIcon: "",
+        toValue:1
+      }
     };
   },
 
@@ -186,19 +194,24 @@ export default {
       if (this.coinSelected1.hasOwnProperty("name")) {
         this.openedDropdown1 = false;
         this.operation();
+        this.saveStorage();
       }
     },
     coinSelected2() {
       if (this.coinSelected2.hasOwnProperty("name")) {
         this.openedDropdown2 = false;
         this.operation();
+        this.saveStorage();
       }
+
     },
     valueInput1() {
       this.operation();
+      this.saveStorage();
     },
     valueInput2() {
       this.operation();
+      this.saveStorage();
     }
     // api(newVal){
     //     this.apiData = newVal;
@@ -330,6 +343,19 @@ export default {
     },
     outFocusSelect1(){
       this.openedDropdown1 = false;
+    },
+    saveStorage(){
+      this.miStorage.from = this.coinSelected1.symbol;
+      this.miStorage.fromIcon = this.coinSelected1.icon;
+      this.miStorage.fromValue = this.valueInput1;
+      this.miStorage.to = this.coinSelected2.symbol;
+      this.miStorage.toIcon = this.coinSelected2.icon;
+      this.miStorage.toValue = this.valueInput2;
+      const parsed = JSON.stringify(this.miStorage);
+      localStorage.setItem('miStorage', parsed)
+    },
+    deleteStorage(){
+      localStorage.removeItem('miStorage');
     }
   }
 };
@@ -478,18 +504,237 @@ input::-webkit-inner-spin-button {
 .remake:hover{
   color: #044e97;
 }
+.delete_converter_wrap_responsive{
+    display: none;
+  }
 .recently-updated {
   color: grey;
   animation: blink 0.2s alternate;
   transition: color 0.2s linear;
 }
-
 @keyframes blink {
   from {
     color: black;
   }
   to {
     color: grey;
+  }
+}
+
+/* Responsive */
+@media (max-width: 350px) {
+  .converter{
+    display: flex;
+    flex-direction: column;
+    padding: 0.8rem 1.2rem 1.2rem 1.2rem;
+    max-width: 340px;
+    margin: 2rem 1rem;
+  }
+  .amount_wrap{
+    min-width: 125px;
+    max-width: 125px;
+  }
+  .amount{
+    min-width: 125px;
+    max-width: 125px;
+  }
+   .amount, .symbol {
+    font-size: 1.5rem;
+  }
+  .symbol {
+    font-size: 1.5rem;
+  }
+  .logo {
+    height: 30px;
+  }
+  .equal_wrap {
+    order: 3;
+    padding: 0 0.5rem;
+  }
+  .delete_converter_wrap{
+    order: 1;
+    align-self: flex-end;
+    padding-bottom: 1rem;
+    padding-left: 0.5rem;
+  }
+  .converter_left{
+    order: 2;
+  }
+  .converter_right{
+    order: 4;
+  }
+  .delete_converter {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+  }
+  .amount_wrap {
+    padding: 0.5rem 0.2rem 0.2rem 0.2rem;
+  }
+  .full_coin_wrap {
+    padding: 0.5rem 0 0.2rem 0;
+  }
+  .plus_wrap {
+    padding: 6rem 1rem 0 0 !important;
+  }
+  .plus_button {
+    padding: 8px 14px !important;
+  }
+}
+@media (max-width: 576px) and (min-width: 350px) {
+  .converter{
+    display: flex;
+    flex-direction: column;
+    padding: 1.2rem 2.2rem 2.2rem 2.2rem;
+    max-width: 340px;
+    margin: 2rem 1rem;
+  }
+  .amount_wrap{
+    min-width: 125px;
+    max-width: 125px;
+  }
+  .amount{
+    min-width: 125px;
+    max-width: 125px;
+  }
+  .delete_converter_wrap{
+    order: 1;
+    align-self: flex-end;
+    padding-bottom: 1rem;
+  }
+  .converter_left{
+    order: 2;
+  }
+  .converter_right{
+    order: 4;
+  }
+   .amount, .symbol {
+    font-size: 1.5rem;
+  }
+  .symbol {
+    font-size: 1.5rem;
+  }
+  .logo {
+    height: 30px;
+  }
+  .equal_wrap {
+    padding: 0 0.5rem;
+    order: 3;
+  }
+  .delete_converter {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+  }
+  .amount_wrap {
+    padding: 0.5rem 0.2rem 0.2rem 0.2rem;
+  }
+  .full_coin_wrap {
+    padding: 0.5rem 0 0.2rem 0;
+  }
+  .delete_converter_wrap {
+    padding-left: 0.5rem;
+  }
+  .plus_wrap {
+    padding: 6rem 1rem 0 0 !important;
+  }
+  .plus_button {
+    padding: 8px 14px !important;
+  }
+}
+@media (max-width: 768px) and (min-width: 577px)  {
+  .converter{
+    display: flex;
+    flex-direction: column;
+    padding: 1.2rem 2.2rem 2.2rem 2.2rem;
+    max-width: 540px;
+  }
+  .delete_converter_wrap{
+    order: 1;
+    align-self: flex-end;
+    padding-bottom: 1rem;
+  }
+  .converter_left{
+    order: 2;
+  }
+  .equal_wrap {
+    order: 3;
+  }
+  .converter_right{
+    order: 4;
+  }
+  .amount_wrap{
+    min-width: 278px;
+  }
+  .amount{
+    min-width: 278px;
+  }
+}
+@media (max-width: 992px) and (min-width: 769px)  {
+  .amount, .symbol {
+    font-size: 1.5rem;
+  }
+  .symbol {
+    font-size: 1.5rem;
+  }
+  .logo {
+    height: 30px;
+  }
+  .converter {
+    max-width: 740px;
+    padding: 2rem 0 2rem 1rem;
+    margin: 1rem 0;
+  }
+  .amount{
+    max-width: 125px;
+  }
+  .equal_wrap {
+    padding: 0 0.5rem;
+  }
+  .delete_converter {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+  }
+  .amount_wrap {
+    padding: 0.5rem 0.2rem 0.2rem 0.2rem;
+  }
+  .full_coin_wrap {
+    padding: 0.5rem 0 0.2rem 0;
+  }
+  .delete_converter_wrap {
+    padding-left: 0.5rem;
+  }
+  .plus_wrap {
+    padding: 3em 0 0 0 !important;
+  }
+  .plus_button {
+    padding: 8px 14px !important;
+  }
+}
+@media (max-width: 1200px) and (min-width: 993px) {
+  .amount, .symbol {
+    font-size: 2rem;
+  }
+  .symbol {
+    font-size: 2rem;
+  }
+  .logo {
+    height: 35px;
+  }
+  .converter {
+    max-width: 970px;
+  }
+  .amount{
+    max-width: 170px;
+  }
+  .equal_wrap {
+    padding: 0 1rem;
+  }
+  .delete_converter {
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
   }
 }
 </style>

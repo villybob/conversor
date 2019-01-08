@@ -114,7 +114,7 @@ export default {
             symbol: symbol,
             rate: 1/this.fiatRates[symbol],
             icon: "http://pngimg.com/uploads/coin/coin_PNG36943.png",
-            decimals: 2,
+            decimals: 8,
           };
           this.api.push(fiatCoins);
         });

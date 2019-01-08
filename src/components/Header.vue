@@ -223,19 +223,6 @@ header label {
     padding: 1em 0 0 0;
     text-align: center;
   }
-  .title_header {
-    padding: 1rem 0 1rem 2rem;
-    position: relative;
-    font-size: 25px;
-    width: 100%;
-    max-width: 200px;
-    margin: 0 auto;
-  }
-}
-@media (max-width: 1200px) {
-  .full_header {
-    max-width: 970px;
-  }
 }
 @media (max-width: 992px) {
   .logo_header{
@@ -249,6 +236,21 @@ header label {
   }
   li {
     padding: 1em 0 0 1.5em;
+  }
+  .title_header {
+    padding: 5rem 0 1rem 2rem;
+    font-size: 25px;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+  .header_wrap{
+    background: linear-gradient(to bottom, #09417a 0, #0b4986 100%);
+  }
+}
+@media (max-width: 1200px) {
+  .full_header {
+    max-width: 970px;
   }
 }
 </style>
