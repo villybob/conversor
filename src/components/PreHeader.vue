@@ -32,7 +32,7 @@ export default {
     },
     
     watch:{
-        api(newVal, oldVal){
+        api(newVal){
             this.apiData = newVal;
         
             this.api.map((coin)=>{

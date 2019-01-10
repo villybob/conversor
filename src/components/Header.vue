@@ -9,35 +9,6 @@
       <label for="btn_menu">
         <img class="menu_icon" src="../assets/img/menu.png" alt="Menu">
       </label>
-    <nav class="nav_header_responsive">
-      <ul id="menu_main_responsive">
-        <li id="menu_converter_responsive">
-          <a href="index.html">
-            <span>CONVERTER</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://bit2me.com">
-            <span>BIT2ME.COM</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://bit2me.com/es/comprar-bitcoins.php">
-            <span>COMPRAR</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://bit2me.com/es/vender-bitcoins.php">
-            <span>VENDER</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://academy.bit2me.com">
-            <span>ACADEMY</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
         <div class="menu_header">
           <nav class="nav_header">
             <ul id="menu_main">
@@ -125,7 +96,6 @@ export default {
 .logo_header img {
   height: 50px;
   padding-top: 1em;
-  /*padding-left: 20%;*/
 }
 .menu_header {
   float: right;
@@ -140,28 +110,25 @@ li {
   padding: 1em 0 0 2em;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-#menu_main a, #menu_main_responsive a {
+#menu_main a {
   font-style: normal;
   text-transform: none;
   letter-spacing: 0px;
   text-decoration: none;
   color: #ddd;
 }
-#menu_main a:hover, #menu_main_responsive a:hover {
+#menu_main a:hover {
   color: #fff;
 }
-#menu_converter a, #menu_converter_responsive a {
+#menu_converter a {
   color: #fff;
   font-weight: 600;
 }
-#menu_converter a:hover, #menu_converter_responsive a:hover {
+#menu_converter a:hover {
   color: #fff;
 }
 
 /* Responsive */
-.nav_header_responsive{
-  display: none;
-}
 #btn_menu {
   display: none;
 }
@@ -173,7 +140,6 @@ header label {
 .menu_icon {
   height: 20px;
 }
-
 @media (max-width: 576px){
   .full_header{
     max-width: 576px;
@@ -190,23 +156,24 @@ header label {
     float: right;
     padding: 2em 1.5em 0 0;
   }
-  .nav_header{
+  .menu_header{
     display: none;
+    float:none;
+    padding-right: 2rem;
   }
-  .nav_header_responsive {
+  .nav_header {
     position: absolute;
     width: 100%;
-    display: none;
     margin: 4em auto 0 auto;
     background-color: #064685;
   }
-  .nav_header_responsive ul {
-    display: block;
+  .nav_header ul {
+    display: block !important;
     margin: 0 auto;
     padding: 0 1em 1em 0;
     width: 100%;
   }
-  #btn_menu:checked ~ .nav_header_responsive{
+   #btn_menu:checked ~ .menu_header{
     display: block;
   }
   .full_header {
@@ -214,10 +181,6 @@ header label {
   }
   .logo_header {
     padding-left: 2rem;
-  }
-  .menu_header {
-    flex: none;
-    padding-right: 2rem;
   }
   li {
     padding: 1em 0 0 0;

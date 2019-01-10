@@ -23,11 +23,12 @@
           <div class="full_coin_wrap">
             <div v-if="openedDropdown1">
               <vue-single-select
-                inputId="vueSingleSelect1"
+                :inputId="uuid1"
                 :options="apiData"
                 v-model="coinSelected1"
                 placeholder="insert coin"
-                :filterBy="customFilter()"  
+                :filterBy="customFilter()"
+                @customblur="outFocusSelect1"
               >
                 <template slot="option" slot-scope="{option}">
                   <div class="select_coin_wrap">
@@ -77,11 +78,12 @@
           <div class="full_coin_wrap">
             <div v-if="openedDropdown2">
               <vue-single-select
-                inputId="vueSingleSelect2"
+                :inputId="uuid2"
                 :options="apiData"
                 v-model="coinSelected2"
                 placeholder="insert coin"
                 :filterBy="customFilter()"
+                @customblur="outFocusSelect2"
               >
                 <template slot="option" slot-scope="{option}">
                   <div class="select_coin_wrap">
@@ -129,13 +131,13 @@
 </template>
 
 <script>
-import VueSingleSelect from "vue-single-select";
+import VueSingleSelect from './select.js';
 
 export default {
   name: "converter",
 
   components: {
-    VueSingleSelect
+    VueSingleSelect,
   },
 
   props: {
@@ -151,6 +153,9 @@ export default {
       isDelete: false,
       valueInput1: 1,
       valueInput2: 1,
+      uuid1: "",
+      uuid2: "",
+      uuid3: "",
       coinSelected1: {
         name: "",
         symbol: "",
@@ -159,12 +164,14 @@ export default {
         decimals: 8
       },
       coinSelected2: {
-        name: "",
+        name: "United States Dollar",
         symbol: "USD",
         icon: "http://pngimg.com/uploads/coin/coin_PNG36943.png",
         rate: 1,
         decimals: 8
       },
+      provisionalCoin1:{},
+      provisionalCoin2: {},
       apiData: [],
       miStorage:{
         from: "",
@@ -181,13 +188,13 @@ export default {
     openedDropdown1() {
       setTimeout(() => {
         if (this.openedDropdown1) 
-          document.getElementById("vueSingleSelect1").focus();
+          document.getElementById(this.uuid1).focus();
       }, 10);
     },
     openedDropdown2() {
       setTimeout(() => {
         if (this.openedDropdown2)
-          document.getElementById("vueSingleSelect2").focus();
+          document.getElementById(this.uuid2).focus();
       }, 10);
     },
     coinSelected1() {
@@ -237,6 +244,10 @@ export default {
   },
 
   mounted() {
+    const uuidv4 = require('uuid/v4');
+    this.uuid1 = uuidv4();
+    this.uuid2 = uuidv4();
+    this.uuid3 = uuidv4();
     this.$refs.amount_left.focus();
     this.apiData = this.api;
     this.coinSelected1 = this.api[0];
@@ -264,20 +275,20 @@ export default {
     },
     operation() {
       if (this.isInput1Focus) {
-        if(this.coinSelected2.decimals==2){
+        if(this.coinSelected2.decimals==8){
           this.valueInput2 =
             ((this.valueInput1 * this.coinSelected1.rate) /
-            this.coinSelected2.rate).toFixed(2);
+            this.coinSelected2.rate).toFixed(8);
         }else{
           this.valueInput2 =
             ((this.valueInput1 * this.coinSelected1.rate) /
             this.coinSelected2.rate).toFixed(8);
         }
       } else {
-        if(this.coinSelected1.decimals==2){
+        if(this.coinSelected1.decimals==8){
           this.valueInput1 =
             ((this.valueInput2 * this.coinSelected2.rate) /
-            this.coinSelected1.rate).toFixed(2)
+            this.coinSelected1.rate).toFixed(8)
         }else{
           this.valueInput1 =
             ((this.valueInput2 * this.coinSelected2.rate) /
@@ -305,11 +316,14 @@ export default {
     handleSelectCoin1() {
       this.openedDropdown1 = true;
       // this.isInput1Focus = true;
+      this.provisionalCoin1 = this.coinSelected1;
       this.coinSelected1 = {};
     },
     handleSelectCoin2() {
       this.openedDropdown2 = true;
       // this.isInput1Focus = false;
+      this.provisionalCoin2 = this.coinSelected2;
+
       this.coinSelected2 = {};
     },
     deleteConverter() {
@@ -318,6 +332,7 @@ export default {
         if(this.remake==false)
         this.isDelete = true;
       }, 2500);
+      // this.deleteStorage();
     },
     remakeConverter() {
       this.remake = true;
@@ -341,21 +356,60 @@ export default {
       sizeRight *= 23;
       textRight.style.width = sizeRight+"px";
     },
-    outFocusSelect1(){
-      this.openedDropdown1 = false;
+    outFocusSelect1(data){
+     if (data != 'item-selected'){
+          this.coinSelected1 = this.provisionalCoin1;
+          this.openedDropdown1 = false;
+        }
+    },
+    outFocusSelect2(data){
+       if (data != 'item-selected'){
+          this.coinSelected2 = this.provisionalCoin2;
+          this.openedDropdown2 = false;
+        }
     },
     saveStorage(){
-      this.miStorage.from = this.coinSelected1.symbol;
-      this.miStorage.fromIcon = this.coinSelected1.icon;
-      this.miStorage.fromValue = this.valueInput1;
-      this.miStorage.to = this.coinSelected2.symbol;
-      this.miStorage.toIcon = this.coinSelected2.icon;
-      this.miStorage.toValue = this.valueInput2;
+      let miStorage = localStorage.getItem('miStorage');
+
+      // miStorage[this.uuid] = {
+      //   from: this.coinSelected1.symbol,
+      //   fromIcon: this.coinSelected1.icon,
+      //   fromValue: this.valueInput1,
+      //   to: this.coinSelected2.symbol,
+      //   toIcon: this.coinSelected2.icon,
+      //   toValue: this.valueInput2
+      // };
+
+      for (let i in miStorage) {
+        miStorage[i] = {
+          uuid: this.uuid,
+          from: this.coinSelected1.symbol,
+          fromIcon: this.coinSelected1.icon,
+          fromValue: this.valueInput1,
+          to: this.coinSelected2.symbol,
+          toIcon: this.coinSelected2.icon,
+          toValue: this.valueInput2
+        }
+      }
+
+
+
+      // this.miStorage.from = this.coinSelected1.symbol;
+      // this.miStorage.fromIcon = this.coinSelected1.icon;
+      // this.miStorage.fromValue = this.valueInput1;
+      // this.miStorage.to = this.coinSelected2.symbol;
+      // this.miStorage.toIcon = this.coinSelected2.icon;
+      // this.miStorage.toValue = this.valueInput2;
       const parsed = JSON.stringify(this.miStorage);
       localStorage.setItem('miStorage', parsed)
     },
     deleteStorage(){
-      localStorage.removeItem('miStorage');
+      let miStorage = localStorage.getItem('miStorage');
+      for (let i in miStorage) {
+          miStorage.splice(i, 1);
+      }
+      const parsed = JSON.stringify(this.miStorage);
+      localStorage.setItem('miStorage', parsed);
     }
   }
 };
@@ -372,7 +426,7 @@ export default {
 }
 input {
   -webkit-appearance: none;
-  -moz-appearance: none;
+  -moz-appearance: textfield;
   -ms-appearance: none;
   -o-appearance: none;
   appearance: none;
@@ -380,6 +434,7 @@ input {
   text-align: center;
   min-width: 100px;
   max-width: 255px;
+  background-color: #fff;
 }
 input:focus {
   outline: 0px;
@@ -416,7 +471,7 @@ input::-webkit-inner-spin-button {
   overflow: visible;
   border: 2px solid #91adcc;
   border-radius: 5px;
-  flex: auto;
+  /* flex: auto; */
 }
 .full_coin_wrap {
   padding: 0.8rem 0.6rem 0.6rem 0.6rem;
