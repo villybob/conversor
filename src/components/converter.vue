@@ -13,11 +13,12 @@
               ref="amount_left"
               class="amount"
               type="number"
-              min=0
+              min="0"
               v-model="valueInput1"
               @focus="isInput1Focus=true"
               @blur="outFocus()"
               @click="onFocus()"
+              step="0.00000001"
             >
           </div>
           <div class="full_coin_wrap">
@@ -73,6 +74,8 @@
               @focus="isInput1Focus=false"
               @blur="outFocus()"
               @click="onFocus()"
+              step="0.00000001"
+              min="0"
             >
           </div>
           <div class="full_coin_wrap">
@@ -174,6 +177,7 @@ export default {
       provisionalCoin2: {},
       apiData: [],
       miStorage:{
+        uuid: "",
         from: "",
         fromIcon: "",
         fromValue: 1,
@@ -210,7 +214,6 @@ export default {
         this.operation();
         this.saveStorage();
       }
-
     },
     valueInput1() {
       this.operation();
@@ -331,12 +334,13 @@ export default {
       setTimeout(() => {
         if(this.remake==false)
         this.isDelete = true;
-      }, 2500);
-      // this.deleteStorage();
+        this.deleteStorage();
+      }, 2500)
+    
     },
     remakeConverter() {
       this.remake = true;
-      setTimeout(() =>{
+      setTimeout(() => {
         this.$refs.converter.classList.add("new_converter");
         this.adjustInput();
         setTimeout(() => {
@@ -344,7 +348,7 @@ export default {
           }, 1000);
       }, 1);
     },
-    adjustInput(){
+    adjustInput() {
       let textLeft = this.$refs.amount_left;
       let txtl = textLeft.value;
       let sizeLeft = txtl.length;
@@ -356,22 +360,22 @@ export default {
       sizeRight *= 23;
       textRight.style.width = sizeRight+"px";
     },
-    outFocusSelect1(data){
-     if (data != 'item-selected'){
+    outFocusSelect1(data) {
+     if (data != 'item-selected') {
           this.coinSelected1 = this.provisionalCoin1;
           this.openedDropdown1 = false;
         }
     },
-    outFocusSelect2(data){
+    outFocusSelect2(data) {
        if (data != 'item-selected'){
           this.coinSelected2 = this.provisionalCoin2;
           this.openedDropdown2 = false;
         }
     },
-    saveStorage(){
-      let miStorage = localStorage.getItem('miStorage');
+    saveStorage() {
+      
 
-      // miStorage[this.uuid] = {
+      // miStorage[this.uuid3] = {
       //   from: this.coinSelected1.symbol,
       //   fromIcon: this.coinSelected1.icon,
       //   fromValue: this.valueInput1,
@@ -379,37 +383,49 @@ export default {
       //   toIcon: this.coinSelected2.icon,
       //   toValue: this.valueInput2
       // };
+      setTimeout(() => {
+        if(localStorage.getItem('miStorage')){
 
-      for (let i in miStorage) {
-        miStorage[i] = {
-          uuid: this.uuid,
-          from: this.coinSelected1.symbol,
-          fromIcon: this.coinSelected1.icon,
-          fromValue: this.valueInput1,
-          to: this.coinSelected2.symbol,
-          toIcon: this.coinSelected2.icon,
-          toValue: this.valueInput2
+          let miStorage = [];
+          miStorage = Array.from(JSON.parse(localStorage.getItem('miStorage')));
+          for (let i in miStorage) {
+           miStorage[i] = {
+              uuid: this.uuid3,
+              from: this.coinSelected1.symbol,
+              fromIcon: this.coinSelected1.icon,
+              fromValue: this.valueInput1,
+              to: this.coinSelected2.symbol,
+              toIcon: this.coinSelected2.icon,
+              toValue: this.valueInput2
+            }
+          const parsed = JSON.stringify(miStorage);
+          localStorage.setItem('miStorage', parsed)
+          }
+        } 
+        else {
+          let miStorage = {
+              uuid: this.uuid3,
+              from: this.coinSelected1.symbol,
+              fromIcon: this.coinSelected1.icon,
+              fromValue: this.valueInput1,
+              to: this.coinSelected2.symbol,
+              toIcon: this.coinSelected2.icon,
+              toValue: this.valueInput2
+            }
+          const parsed = JSON.stringify(miStorage);
+          localStorage.setItem('miStorage', parsed)
         }
-      }
-
-
-
-      // this.miStorage.from = this.coinSelected1.symbol;
-      // this.miStorage.fromIcon = this.coinSelected1.icon;
-      // this.miStorage.fromValue = this.valueInput1;
-      // this.miStorage.to = this.coinSelected2.symbol;
-      // this.miStorage.toIcon = this.coinSelected2.icon;
-      // this.miStorage.toValue = this.valueInput2;
-      const parsed = JSON.stringify(this.miStorage);
-      localStorage.setItem('miStorage', parsed)
+        
+      },20)
     },
     deleteStorage(){
-      let miStorage = localStorage.getItem('miStorage');
-      for (let i in miStorage) {
-          miStorage.splice(i, 1);
-      }
-      const parsed = JSON.stringify(this.miStorage);
-      localStorage.setItem('miStorage', parsed);
+      // let miStorage = localStorage.getItem('miStorage');
+      // for (let i in miStorage) {
+      //     miStorage.splice(i, 1);
+      // }
+      // const parsed = JSON.stringify(this.miStorage);
+      // localStorage.setItem('miStorage', parsed);
+      localStorage.removeItem('miStorage');
     }
   }
 };
@@ -471,7 +487,6 @@ input::-webkit-inner-spin-button {
   overflow: visible;
   border: 2px solid #91adcc;
   border-radius: 5px;
-  /* flex: auto; */
 }
 .full_coin_wrap {
   padding: 0.8rem 0.6rem 0.6rem 0.6rem;
