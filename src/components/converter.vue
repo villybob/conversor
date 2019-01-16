@@ -145,6 +145,7 @@ export default {
 
   props: {
     api: Array,
+    value: {},
   },
 
   data() {
@@ -176,15 +177,6 @@ export default {
       provisionalCoin1:{},
       provisionalCoin2: {},
       apiData: [],
-      miStorage:{
-        uuid: "",
-        from: "",
-        fromIcon: "",
-        fromValue: 1,
-        to: "",
-        toIcon: "",
-        toValue:1
-      }
     };
   },
 
@@ -253,8 +245,7 @@ export default {
     this.uuid3 = uuidv4();
     this.$refs.amount_left.focus();
     this.apiData = this.api;
-    this.coinSelected1 = this.api[0];
-    this.valueInput2 = this.api[0].rate;
+    this.restoreStorage();
     this.onFocus();
     this.adjustInput();
     setTimeout(() => {this.adjustInput();}, 10);
@@ -318,23 +309,21 @@ export default {
     },
     handleSelectCoin1() {
       this.openedDropdown1 = true;
-      // this.isInput1Focus = true;
       this.provisionalCoin1 = this.coinSelected1;
       this.coinSelected1 = {};
     },
     handleSelectCoin2() {
       this.openedDropdown2 = true;
-      // this.isInput1Focus = false;
       this.provisionalCoin2 = this.coinSelected2;
-
       this.coinSelected2 = {};
     },
     deleteConverter() {
       this.remake = false;
       setTimeout(() => {
-        if(this.remake==false)
-        this.isDelete = true;
-        this.deleteStorage();
+        if(this.remake==false){
+          this.isDelete = true;
+          this.deleteStorage();
+        }
       }, 2500)
     
     },
@@ -373,59 +362,79 @@ export default {
         }
     },
     saveStorage() {
-      
-
-      // miStorage[this.uuid3] = {
-      //   from: this.coinSelected1.symbol,
-      //   fromIcon: this.coinSelected1.icon,
-      //   fromValue: this.valueInput1,
-      //   to: this.coinSelected2.symbol,
-      //   toIcon: this.coinSelected2.icon,
-      //   toValue: this.valueInput2
-      // };
-      setTimeout(() => {
         if(localStorage.getItem('miStorage')){
-
-          let miStorage = [];
-          miStorage = Array.from(JSON.parse(localStorage.getItem('miStorage')));
-          for (let i in miStorage) {
-           miStorage[i] = {
-              uuid: this.uuid3,
-              from: this.coinSelected1.symbol,
-              fromIcon: this.coinSelected1.icon,
-              fromValue: this.valueInput1,
-              to: this.coinSelected2.symbol,
-              toIcon: this.coinSelected2.icon,
-              toValue: this.valueInput2
+          let miStorage = JSON.parse(localStorage.getItem('miStorage'));
+          let existUuid = false;
+          for (let i = 0; i < miStorage.length; i++) {
+            if(miStorage[i].uuid==this.uuid3){
+              miStorage[i].coinSelected1 = this.coinSelected1,
+              miStorage[i].coinSelected2 = this.coinSelected2,
+              miStorage[i].valueInput1 = this.valueInput1,
+              miStorage[i].valueInput2 = this.valueInput2
+              miStorage[i].isInput1Focus = this.isInput1Focus,
+              
+              existUuid = true;
+              const parsed = JSON.stringify(miStorage);
+              localStorage.setItem('miStorage', parsed)
             }
-          const parsed = JSON.stringify(miStorage);
-          localStorage.setItem('miStorage', parsed)
+          }
+          if(!existUuid){
+            miStorage.push({
+              uuid: this.uuid3,
+              coinSelected1: this.coinSelected1,
+              coinSelected2: this.coinSelected2,
+              valueInput1: this.valueInput1,
+              valueInput2: this.valueInput2,
+              isInput1Focus: this.isInput1Focus
+            })
+            const parsed = JSON.stringify(miStorage);
+            localStorage.setItem('miStorage', parsed)  
           }
         } 
         else {
-          let miStorage = {
+          let miStorage = []
+          miStorage.push({
               uuid: this.uuid3,
-              from: this.coinSelected1.symbol,
-              fromIcon: this.coinSelected1.icon,
-              fromValue: this.valueInput1,
-              to: this.coinSelected2.symbol,
-              toIcon: this.coinSelected2.icon,
-              toValue: this.valueInput2
-            }
+              coinSelected1: this.coinSelected1,
+              coinSelected2: this.coinSelected2,
+              valueInput1: this.valueInput1,
+              valueInput2: this.valueInput2,
+              isInput1Focus: this.isInput1Focus
+            })
           const parsed = JSON.stringify(miStorage);
           localStorage.setItem('miStorage', parsed)
         }
-        
-      },20)
     },
     deleteStorage(){
-      // let miStorage = localStorage.getItem('miStorage');
-      // for (let i in miStorage) {
-      //     miStorage.splice(i, 1);
-      // }
-      // const parsed = JSON.stringify(this.miStorage);
-      // localStorage.setItem('miStorage', parsed);
-      localStorage.removeItem('miStorage');
+      let miStorage = JSON.parse(localStorage.getItem('miStorage'));
+      for (let i = 0; i < miStorage.length; i++) {
+        if(miStorage[i].uuid==this.uuid3){
+          miStorage.splice(i, 1);
+        }
+      }
+      const parsed = JSON.stringify(miStorage);
+      localStorage.setItem('miStorage', parsed);
+    },
+    restoreStorage(){
+      if(this.value){
+        if(this.value.uuid){
+          this.uuid3 = this.value.uuid;
+          this.coinSelected1 = this.value.coinSelected1;
+          this.coinSelected2 = this.value.coinSelected2;
+          if(this.value.isInput1Focus){
+            this.valueInput1 = this.value.valueInput1;
+          }else{
+            this.valueInput2 = this.value.valueInput2;
+            this.isInput1Focus = false;
+          }
+        }else{
+          this.coinSelected1 = this.api[0];
+          this.valueInput2 = this.api[0].rate;
+        }
+      }else{
+        this.coinSelected1 = this.api[0];
+          this.valueInput2 = this.api[0].rate;
+      }
     }
   }
 };

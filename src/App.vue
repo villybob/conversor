@@ -13,8 +13,8 @@
           <span class="loading">Loading...</span>
         </div>
         <div id="converter_template_wrap" class="converter_template_wrap" v-if="api.length">
-          <converter :api="api" v-for="converted in orderedConverters" :key="converted"/>  
-          <converter :api="api"/>
+          <converter :api="api" :value="converted" v-for="converted in orderedConverters" :key="converted.uuid"/>  
+          <converter v-if="!existStorage" :api="api"/>
         </div>
       </div>
     </div>
@@ -52,6 +52,7 @@ export default {
       currencySymbols: [],
       names: {},
       test: false,
+      existStorage: false,
     };
   },
   computed: {
@@ -60,11 +61,9 @@ export default {
       return this.converters.reverse();
     }
   },
-  /* watch:{
-    converters(newConverters){
-      localStorage.converters = newConverters;
-    }
-  }, */
+  watch:{
+  
+  },
   created() {
     // axios.get(this.urlApi).then(response => {
     //   this.api = response.data.data;
@@ -75,16 +74,24 @@ export default {
     //     this.api = response.data.data;
     //   });
     // }, this.refreshTimeInterval);
-   
     this.fiatNames = currenciesJson;
     this.currencySymbols = Object.keys(this.fiatNames);
   },
   mounted() {
     this.callApi();
-    /* if(localStorage.converters) this.converters = localStorage.converters; */
+    this.getMiStorage();
+    this.converters = this.getMiStorage();
   },
 
   methods: {
+    getMiStorage(){
+      let result = [];
+      if (localStorage.getItem('miStorage').length > 2) {
+        this.existStorage = true;
+        result = JSON.parse(localStorage.getItem('miStorage'));
+      }
+      return result;
+    },
     addConverter() {
       this.converters.push(this.converters.length + 1);
     },
