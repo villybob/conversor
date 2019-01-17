@@ -27,7 +27,7 @@
                 :inputId="uuid1"
                 :options="apiData"
                 v-model="coinSelected1"
-                placeholder="insert coin"
+                placeholder="search"
                 :filterBy="customFilter()"
                 @customblur="outFocusSelect1"
               >
@@ -84,7 +84,7 @@
                 :inputId="uuid2"
                 :options="apiData"
                 v-model="coinSelected2"
-                placeholder="insert coin"
+                placeholder="search"
                 :filterBy="customFilter()"
                 @customblur="outFocusSelect2"
               >
@@ -483,6 +483,7 @@ input::-webkit-inner-spin-button {
   padding: 3rem;
   margin: 2rem 0;
 }
+
 .full_converter_wrap,
 .amount_coin_wrap,
 .coin_wrap {
@@ -498,7 +499,7 @@ input::-webkit-inner-spin-button {
   border-radius: 5px;
 }
 .full_coin_wrap {
-  padding: 0.8rem 0.6rem 0.6rem 0.6rem;
+  padding: 0.8rem 0.3rem 0.6rem 0.3rem;
   border-left: 2px solid #91adcc;
   background-color: #e8edf4;
   width: -webkit-fill-available;
@@ -508,11 +509,11 @@ input::-webkit-inner-spin-button {
   cursor: hand;
 }
 .amount_wrap {
-  padding: 0.6rem;
+  padding: 0.6rem 0.2rem;
 }
 .coin_logo,
 .coin_symbol {
-  padding: 0 0.5rem;
+  padding: 0 0.2rem;
 }
 .amount {
   font-size: 2.5rem;
@@ -525,7 +526,7 @@ input::-webkit-inner-spin-button {
   height: 15px;
 }
 .equal_wrap {
-  padding: 0 3rem;
+  padding: 0 1rem;
   flex: 2;
   text-align: center;
 }
@@ -535,7 +536,7 @@ input::-webkit-inner-spin-button {
   border-radius: 5px;
 }
 .delete_converter_wrap {
-  padding-left: 2rem;
+  padding-left: 1.5rem;
   flex: 2;
   align-content: flex-end;
 }
@@ -617,7 +618,7 @@ input::-webkit-inner-spin-button {
     min-width: 125px;
     max-width: 125px;
   }
-   .amount, .symbol {
+  .amount, .symbol {
     font-size: 1.5rem;
   }
   .symbol {

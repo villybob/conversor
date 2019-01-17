@@ -2,8 +2,8 @@
   <div id="body_wrap" class="body_wrap">
     <!-- <PreHeader :api="api"/> -->
     <Header/>
-    <div class="content_body_wrap" v-if="!test">
-      <div class="content_body">
+    <div class="content_body_wrap">
+      <div class="content_body">{{converters}}
         <div id="plus_wrap" class="plus_wrap">
           <div class="plus">
             <button @click="addConverter()" class="plus_button">+ NEW</button>
@@ -13,12 +13,12 @@
           <span class="loading">Loading...</span>
         </div>
         <div id="converter_template_wrap" class="converter_template_wrap" v-if="api.length">
-          <converter :api="api" :value="converted" v-for="converted in orderedConverters" :key="converted.uuid"/>  
+          <converter :api="api" :value="converted" v-for="converted in orderedConverters" :key="converted"/>  
           <converter v-if="!existStorage" :api="api"/>
         </div>
       </div>
     </div>
-    <Footer v-if="!test"/>
+    <Footer/>
   </div>
 </template>
 
@@ -51,7 +51,6 @@ export default {
       crypoRates: {},
       currencySymbols: [],
       names: {},
-      test: false,
       existStorage: false,
     };
   },
@@ -62,7 +61,7 @@ export default {
     }
   },
   watch:{
-  
+
   },
   created() {
     // axios.get(this.urlApi).then(response => {
@@ -160,6 +159,9 @@ export default {
     background-color: #044e97;
     padding: 12px 22px;
     border: none;
+    height: 48px;
+    font-family: 'Open Sans',sans-serif;
+    font-size: 15px;
   }
   .plus_button:hover{
     color: rgba(255,255,255,1);
