@@ -1,7 +1,7 @@
 <template>
   <header class="content_header">
     <div class="header_wrap">
-      <div ref="header_scroll" class="full_header" v-on:scroll.passive="onScroll">
+      <div ref="header_scroll" class="full_header">
         <div class="logo_header">
           <img src="../assets/img/bit2me-white.svg" alt="bit2me">
         </div>
@@ -55,11 +55,6 @@
 export default {
   name: "Header",
   props: {},
-  methods: {
-    onScroll: function() {
-      this.$refs.header_scroll.classList.add("header_scroll");
-    }
-  }
 };
 </script>
 

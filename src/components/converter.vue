@@ -160,20 +160,8 @@ export default {
       uuid1: "",
       uuid2: "",
       uuid3: "",
-      coinSelected1: {
-        name: "",
-        symbol: "",
-        icon: "",
-        rate: 1,
-        decimals: 8
-      },
-      coinSelected2: {
-        name: "United States Dollar",
-        symbol: "USD",
-        icon: "http://pngimg.com/uploads/coin/coin_PNG36943.png",
-        rate: 1,
-        decimals: 8
-      },
+      coinSelected1: {},
+      coinSelected2: {},
       provisionalCoin1:{},
       provisionalCoin2: {},
       apiData: [],
@@ -214,38 +202,38 @@ export default {
     valueInput2() {
       this.operation();
       this.saveStorage();
+    },
+    api(newVal){
+        this.apiData = newVal;
+
+        this.api.map((coin)=>{
+            if(this.coinSelected1.symbol === coin.symbol){
+                this.coinSelected1.rate = coin.rate;
+                }
+            if(this.coinSelected2.symbol === coin.symbol){
+                this.coinSelected2.rate = coin.rate;
+            }
+        });
+        this.operation();
+        if(this.$refs.amount_left){
+          if(this.isInput1Focus){
+              this.$refs.amount_right.classList.add('recently-updated');
+              setTimeout(()=>this.$refs.amount_right.classList.remove('recently-updated'), 300);
+          }else{
+              this.$refs.amount_left.classList.add('recently-updated');
+              setTimeout(()=>this.$refs.amount_left.classList.remove('recently-updated'), 300);
+          }
+        }
     }
-    // api(newVal){
-    //     this.apiData = newVal;
-
-    //     this.api.map((coin)=>{
-    //         if(this.coinSelected1.symbol === coin.symbol){
-    //             this.coinSelected1.rate = coin.rate;
-    //             }
-    //         if(this.coinSelected2.symbol === coin.symbol){
-    //             this.coinSelected2.rate = coin.rate;
-    //         }
-    //     });
-
-    //     this.operation();
-    //     if(this.isInput1Focus){
-    //         this.$refs.amount_right.classList.add('recently-updated');
-    //         setTimeout(()=>this.$refs.amount_right.classList.remove('recently-updated'), 300);
-    //     }else{
-    //         this.$refs.amount_left.classList.add('recently-updated');
-    //         setTimeout(()=>this.$refs.amount_left.classList.remove('recently-updated'), 300);
-    //     }
-    // }
   },
 
   mounted() {
     const uuidv4 = require('uuid/v4');
     this.uuid1 = uuidv4();
     this.uuid2 = uuidv4();
-    this.uuid3 = uuidv4();
     this.$refs.amount_left.focus();
     this.apiData = this.api;
-    this.restoreStorage();
+    this.paintConverter();
     this.onFocus();
     this.adjustInput();
     setTimeout(() => {this.adjustInput();}, 10);
@@ -256,6 +244,27 @@ export default {
   },
 
   methods: {
+    paintConverter(){
+      if(this.value){
+        if(this.value.uuid){
+          this.uuid3 = this.value.uuid;
+          this.coinSelected1 = this.value.coinSelected1;
+          this.coinSelected2 = this.value.coinSelected2;
+          if(this.value.isInput1Focus){
+            this.valueInput1 = this.value.valueInput1;
+          }else{
+            this.valueInput2 = this.value.valueInput2;
+            this.isInput1Focus = false;
+          }
+        }else{
+          this.coinSelected1 = this.api[0];
+          this.valueInput2 = this.api[0].rate;
+        }
+      }else{
+        this.coinSelected1 = this.api[0];
+          this.valueInput2 = this.api[0].rate;
+      }
+    },
     customFilter() {
       return function(option) {
         if (
@@ -338,16 +347,18 @@ export default {
       }, 1);
     },
     adjustInput() {
-      let textLeft = this.$refs.amount_left;
-      let txtl = textLeft.value;
-      let sizeLeft = txtl.length;
-      sizeLeft *= 23;
-      textLeft.style.width = sizeLeft+"px";
-      let textRight = this.$refs.amount_right;
-      let txtr = textRight.value;
-      let sizeRight = txtr.length;
-      sizeRight *= 23;
-      textRight.style.width = sizeRight+"px";
+      if(this.$refs.amount_left){
+        let textLeft = this.$refs.amount_left;
+        let txtl = textLeft.value;
+        let sizeLeft = txtl.length;
+        sizeLeft *= 23;
+        textLeft.style.width = sizeLeft+"px";
+        let textRight = this.$refs.amount_right;
+        let txtr = textRight.value;
+        let sizeRight = txtr.length;
+        sizeRight *= 23;
+        textRight.style.width = sizeRight+"px";
+      }
     },
     outFocusSelect1(data) {
      if (data != 'item-selected') {
@@ -415,27 +426,6 @@ export default {
       const parsed = JSON.stringify(miStorage);
       localStorage.setItem('miStorage', parsed);
     },
-    restoreStorage(){
-      if(this.value){
-        if(this.value.uuid){
-          this.uuid3 = this.value.uuid;
-          this.coinSelected1 = this.value.coinSelected1;
-          this.coinSelected2 = this.value.coinSelected2;
-          if(this.value.isInput1Focus){
-            this.valueInput1 = this.value.valueInput1;
-          }else{
-            this.valueInput2 = this.value.valueInput2;
-            this.isInput1Focus = false;
-          }
-        }else{
-          this.coinSelected1 = this.api[0];
-          this.valueInput2 = this.api[0].rate;
-        }
-      }else{
-        this.coinSelected1 = this.api[0];
-          this.valueInput2 = this.api[0].rate;
-      }
-    }
   }
 };
 </script>

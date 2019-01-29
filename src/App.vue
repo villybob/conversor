@@ -1,9 +1,8 @@
 <template>
   <div id="body_wrap" class="body_wrap">
-    <!-- <PreHeader :api="api"/> -->
     <Header/>
     <div class="content_body_wrap">
-      <div class="content_body">{{converters}}
+      <div class="content_body">
         <div id="plus_wrap" class="plus_wrap">
           <div class="plus">
             <button @click="addConverter()" class="plus_button">+ NEW</button>
@@ -13,8 +12,12 @@
           <span class="loading">Loading...</span>
         </div>
         <div id="converter_template_wrap" class="converter_template_wrap" v-if="api.length">
-          <converter :api="api" :value="converted" v-for="converted in orderedConverters" :key="converted"/>  
-          <converter v-if="!existStorage" :api="api"/>
+          <converter
+            :api="api"
+            :value="converted"
+            v-for="converted in converters"
+            :key="converted.uuid"
+          />
         </div>
       </div>
     </div>
@@ -26,11 +29,9 @@
 import Header from "./components/Header.vue";
 import converter from "./components/converter.vue";
 import Footer from "./components/Footer.vue";
-// import axios from "axios";
-require("@/assets/css/styles.css");
-
 import newApi from "./components/api.js";
 import currenciesJson from "./assets/currencies.json";
+require("@/assets/css/styles.css");
 
 export default {
   name: "App",
@@ -44,55 +45,57 @@ export default {
       converters: [],
       urlApi: "https://api.bit2me.com/v1/ticker2",
       urlNamesFiat: "./assets/currencies.json",
-      refreshTimeInterval: 5000,
+      refreshTimeInterval: 60000,
       api: {},
       fiatRates: {},
       fiatNames: {},
+      fiatCoins: [],
       crypoRates: {},
       currencySymbols: [],
       names: {},
-      existStorage: false,
+      existStorage: false
     };
   },
-  computed: {
-     orderedConverters(){
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      return this.converters.reverse();
-    }
-  },
-  watch:{
-
-  },
   created() {
-    // axios.get(this.urlApi).then(response => {
-    //   this.api = response.data.data;
-    // });
-
-    // setInterval(() => {
-    //   axios.get(this.urlApi).then(response => {
-    //     this.api = response.data.data;
-    //   });
-    // }, this.refreshTimeInterval);
     this.fiatNames = currenciesJson;
     this.currencySymbols = Object.keys(this.fiatNames);
+    this.callApi();
   },
   mounted() {
-    this.callApi();
     this.getMiStorage();
-    this.converters = this.getMiStorage();
+    this.converters = this.getMiStorage().reverse();
+    setInterval(() => {
+      this.refreshApi();
+    }, this.refreshTimeInterval);
   },
 
   methods: {
-    getMiStorage(){
+    getMiStorage() {
       let result = [];
-      if (localStorage.getItem('miStorage').length > 2) {
+      if (localStorage.getItem("miStorage").length > 2) {
         this.existStorage = true;
-        result = JSON.parse(localStorage.getItem('miStorage'));
+        result = JSON.parse(localStorage.getItem("miStorage"));
       }
       return result;
     },
     addConverter() {
-      this.converters.push(this.converters.length + 1);
+      const uuidv4 = require("uuid/v4");
+      let uuid = uuidv4();
+      let newConverter = {
+        uuid: uuid,
+        coinSelected1: this.api[0],
+        coinSelected2: {
+          name: "United States Dollar",
+          symbol: "USD",
+          icon: "http://pngimg.com/uploads/coin/coin_PNG36943.png",
+          rate: 1,
+          decimals: 8
+        },
+        valueInput1: 1,
+        valueInput2: this.api[0].rate,
+        isInput1Focus: true
+      };
+      this.converters.unshift(newConverter);
     },
     async callApi() {
       try {
@@ -104,27 +107,59 @@ export default {
         if (crypoRatesResponse.data) {
           this.crypoRates = crypoRatesResponse.data;
         }
-        
         this.api = this.crypoRates.map(crypto => {
           return {
             name: crypto.name,
-            symbol:  crypto.symbol.toUpperCase(),
+            symbol: crypto.symbol.toUpperCase(),
             rate: crypto.current_price,
             icon: crypto.image,
-            decimals: 8,
+            decimals: 8
           };
         });
         this.currencySymbols.map(symbol => {
-          const fiatCoins = {
+          this.fiatCoins = {
             name: this.fiatNames[symbol],
             symbol: symbol,
-            rate: 1/this.fiatRates[symbol],
+            rate: 1 / this.fiatRates[symbol],
             icon: "http://pngimg.com/uploads/coin/coin_PNG36943.png",
-            decimals: 8,
+            decimals: 8
           };
-          this.api.push(fiatCoins);
+          this.api.push(this.fiatCoins);
         });
-        
+        if (!this.existStorage) {
+          this.addConverter();
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }
+    },
+
+    async refreshApi() {
+      try {
+        const crypoRatesResponse = await newApi.getLatestCryptoExchangeRates();
+        if (crypoRatesResponse.data) {
+          this.crypoRates = crypoRatesResponse.data;
+        }
+        this.api = this.crypoRates.map(crypto => {
+          return {
+            name: crypto.name,
+            symbol: crypto.symbol.toUpperCase(),
+            rate: crypto.current_price,
+            icon: crypto.image,
+            decimals: 8
+          };
+        });
+        this.currencySymbols.map(symbol => {
+          this.fiatCoins = {
+            name: this.fiatNames[symbol],
+            symbol: symbol,
+            rate: 1 / this.fiatRates[symbol],
+            icon: "http://pngimg.com/uploads/coin/coin_PNG36943.png",
+            decimals: 8
+          };
+          this.api.push(this.fiatCoins);
+        });
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
@@ -134,47 +169,47 @@ export default {
 };
 </script>
 <style>
-  .loading_wrap{
-    padding: 3rem;
-    width: 100%;
-    text-align: center;
-    background-color: #fff;
-    padding: 4rem 0;
-    margin: 2rem 0;
-    border-radius: 5px;
-  }
-  .loading{
-    width: 100%;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #044e97;
-  }
-  .plus_wrap{
-    text-align: right;
-    padding: 5em 0 1.5em 0;
-  }
-  .plus_button{
-    color: rgba(255,255,255,0.9);
-    font-weight: 600;
-    background-color: #044e97;
-    padding: 12px 22px;
-    border: none;
-    height: 48px;
-    font-family: 'Open Sans',sans-serif;
-    font-size: 15px;
-  }
-  .plus_button:hover{
-    color: rgba(255,255,255,1);
-    filter: drop-shadow(3px 3px 3px rgba(0,0,0,0.4));
-    cursor:pointer; 
-    cursor: hand;
-  }
-  .plus_button:active{
-    background-color: #0f335b;
-    border: none;
-  }
-  .plus_button:focus{
-    outline: 0;
-  }
+.loading_wrap {
+  padding: 3rem;
+  width: 100%;
+  text-align: center;
+  background-color: #fff;
+  padding: 4rem 0;
+  margin: 2rem 0;
+  border-radius: 5px;
+}
+.loading {
+  width: 100%;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #044e97;
+}
+.plus_wrap {
+  text-align: right;
+  padding: 5em 0 1.5em 0;
+}
+.plus_button {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  background-color: #044e97;
+  padding: 12px 22px;
+  border: none;
+  height: 48px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 15px;
+}
+.plus_button:hover {
+  color: rgba(255, 255, 255, 1);
+  filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.4));
+  cursor: pointer;
+  cursor: hand;
+}
+.plus_button:active {
+  background-color: #0f335b;
+  border: none;
+}
+.plus_button:focus {
+  outline: 0;
+}
 </style>
 
